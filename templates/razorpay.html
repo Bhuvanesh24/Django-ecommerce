@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zac-Razorpay</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        background: linear-gradient(135deg, #88B04B, #65A34E);
+        margin: 0;
+        font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .card {
+        background: linear-gradient(180deg, #ffffff, #f5f5f5);
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+        max-width: 400px;
+    }
+
+    .logo-container {
+        border-radius: 50%;
+        height: 100px;
+        width: 100px;
+        background: #ffffff;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-container img {
+        max-width: 80%;
+        height: auto;
+    }
+
+    button {
+        padding: 15px 30px;
+        text-transform: uppercase;
+        text-decoration: none;
+        letter-spacing: 2px;
+        color: white;
+        border: none;
+        font-size: 16px;
+        position: relative;
+        background: linear-gradient(90deg, #88B04B, #65A34E);
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 8px;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background: linear-gradient(90deg, #65A34E, #88B04B);
+    }
+
+    button::before {
+        content: "Pay";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+</style>
+<body>
+    <div class="card">
+        <div class="logo-container">
+            <img src="{% static "assets/img/ZacLogo.png" %}" alt="Zac-Clothing Logo">
+        </div>
+        <h2 style="color: #333;">Payment Details</h2>
+        <p style="color: #888;">Order ID: {{ order_id }}</p>
+        <button id="rzp-button1"></button>
+    </div>        
+    
+    <script nonce="{{nonce}}">
+        var user_order_id = "{{ user_order_id }}";
+        var successUrl = "{% url 'paymentsuccess' user_order_id='placeholder' %}".replace('placeholder', user_order_id);
+        var options = {
+            "key": "{{api_key}}", // Enter the Key ID generated from the Dashboard
+            "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Zac-Clothing",
+            "description": "Test Transaction",
+            "image": "{% static "assets/img/ZacLogo.png" %}",
+            "order_id": "{{order_id}}",
+            "handler": function (response){
+                $.ajax({
+                    url: '{% url "verify_payment"  %}', 
+                    type: 'POST',
+                    data: {
+                        'razorpay_payment_id': response.razorpay_payment_id,
+                        'razorpay_order_id': response.razorpay_order_id,
+                        'razorpay_signature': response.razorpay_signature,
+            
+                    },
+                    success: function(data) {
+                        window.location.href = successUrl;
+                        
+                    },
+                    error: function() {
+                        alert('Verification failed');
+                        window.location.href = "{% url 'paymentfailure' %}";
+                    }
+                });
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "bhuvaneshwaran813@gmail.com",
+                "contact": "7904505264"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+        });
+        document.getElementById('rzp-button1').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

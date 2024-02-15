@@ -1,0 +1,117 @@
+{% extends "nav.html" %}
+
+{% block title %}
+Zac-Clothing | Order-Tracker
+{% endblock title %}
+{% block load %}
+
+{% endblock load %}
+
+{% block style %}
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tracker-header {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.order-details {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.order-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.pending {
+    color: #ffc107; /* Yellow for pending status */
+}
+
+.placed {
+    color: #6c757d; /* Gray for order placed status */
+}
+
+.shipped {
+    color: #28a745; /* Green for shipped status */
+}
+
+.delivered {
+    color: #007bff; /* Blue for delivered status */
+}
+
+.cancelled {
+    color: #dc3545; /* Red for cancelled status */
+}
+</style>
+{% endblock style %}
+{% block body %}
+
+<br><br><br><br><br><br>
+<div class="container">
+    <div class="tracker-header">
+        <h1>Order Status</h1>
+    </div>
+
+    <div class="order-details">
+        <p>Order ID: {{ order_id }}</p>
+        <p>Order Created At: {{ created_at }}</p>
+        <p>Update Description: {{ update_desc }}</p>
+        <p>Update Time: {{ time }}</p>
+
+        <div class="order-status">
+            <span class="status-label">Order Status:</span>
+            {% if 'orderplaced' in update_desc|lower %}
+                <i class="icon fas fa-shopping-bag placed"></i> Order Placed
+            {% elif 'shipped' in update_desc|lower %}
+                <i class="icon fas fa-shipping-fast shipped"></i> Shipped
+            {% elif 'delivered' in update_desc|lower %}
+                <i class="icon fas fa-check delivered"></i> Delivered
+            {% elif 'cancelled' in update_desc|lower %}
+                <i class="icon fas fa-times-circle cancelled"></i> Cancelled
+            {% else %}
+                <i class="icon fas fa-clock pending"></i> Pending
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script src="https://kit.fontawesome.com/5d4e659e2a.js" crossorigin="anonymous"></script>
+
+{% endblock body %}
+
+
+
+
+

@@ -1,0 +1,48 @@
+
+{% extends "nav.html" %}
+{% load static %}
+{% block title %}
+Zac-Clothing | Reset Password
+{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static "auth/fonts/material-icon/css/material-design-iconic-font.min.css" %}">
+<link rel="stylesheet" href="{% static "auth/css/style.css" %}">
+
+{% endblock style %}
+
+{% block body %}
+<br>
+<div class="conatiner" data-aos="fade-up" data-aos-delay="400">
+    <section class="signup">
+        <div class="container">
+            <div class="signup-content">
+                <div class="signup-form">
+                    <h2 class="form-title">Request Reset Link</h2>
+                    {% for message in messages  %}
+                    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                        <strong>{{message}}</strong> 
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor%}
+
+                    <form method="POST" class="register-form" id="register-form" action="{% url "request-reset-email" %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email"><i class="zmdi zmdi-email"></i></label>
+                            <input type="email" name="email" id="email" placeholder="Your Email"/>
+                        </div>
+                        <div class="form-group form-button">
+                            <input type="submit" name="reset" id="login" class="form-submit" value="Reset"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="signup-image">
+                    <figure><img src="{% static "auth/images/signup-image.jpg" %}" alt="sing up image"></figure>
+                    <a href="{% url "login" %}" class="signup-image-link">Go back?</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock body %}

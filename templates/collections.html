@@ -1,0 +1,51 @@
+{% extends "nav.html" %}
+
+{% load static %}
+
+{% block title %}
+Zac-Clothing | Collections
+
+{% endblock title %}
+
+
+{% block body %}
+
+<section id="services" class="services" style = "margin-top:30px;">
+  <div class="container">
+    <div class="section-title" data-aos="fade-up">
+      <h2>Collections</h2>
+      <p>Feel cozy Home</p>
+    </div>
+    {% for product, range, nSlides in allProds %}
+
+    <div class="container">
+      <h3 class="my-3 text-center text-success bg-light">
+        {{product.0.category}} FLashSale
+      </h3>
+    </div>
+    <div class="container">
+      <div class="row">
+        {% for i in product %}
+        <div class="col-md-3 mt-3">
+          <div class="card"> <!-- Add the card opening tag here -->
+            <img src="/media/{{i.image}}" class="card-img-top" alt="">
+            <div class="card-body">
+              <h5 class="card-title" id="namepr{{i.id}}">
+                {{i.product_name}}
+              </h5>
+              <p class="card-text">{{i.desc|slice:"0.25"}}...</p>
+              <h6 class="card-title">Price:<span id="pricepr{{i.id}}">{{i.price}}</span></h6>
+              <span id="divpr{{i.id}}" class="divpr">
+                <button class="btn btn-success cart btn-sm mt-0"  onclick="location.href='{% url 'product' product_id=i.id %}'" id="pr{{i.id}}">Purchase</button>
+              </span>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock body %}

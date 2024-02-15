@@ -1,0 +1,89 @@
+{% extends "nav.html" %}
+{% load static %}
+
+{% block title %}
+Zac-Clothing | Orders
+{% endblock title %}
+{% block style %}
+<style>
+    body {
+        margin: 20px;
+    
+    }
+    
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    
+    p {
+        color: #777;
+    }
+    
+    .order-box {
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 50%;
+        margin-bottom:10px;
+        margin-top:10px;
+    }
+    
+    .order-box h2 {
+        margin-bottom: 10px;
+    }
+    
+    .order-details {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    @media only screen and (max-width: 768px) {
+        .order-box {
+            width: 80%;
+        }
+    }
+    
+    @media only screen and (max-width: 576px) {
+        .order-box {
+            width: 100%;
+        }
+    }
+    
+
+</style>
+
+{% endblock style %}
+
+{% block body %}
+<h1>Your Orders</h1>
+{% if orders_with_names %}
+    {% for order_with_name in orders_with_names %}
+    <center>
+        <div class="order-box">
+            <h3>Product Name: {{ order_with_name.product_names }}</h3>
+            <div class="order-details">
+                <p>Order ID: {{ order_with_name.order.order_id |slice:":5" }}...</p>
+                <p>Amount: {{ order_with_name.order.amount }}</p>
+                <p>Payment Status: {{ order_with_name.order.paymentstatus }}</p>
+                <!-- Add other order details here -->
+            </div>
+            <p><a href="tracker/{{ order_with_name.order.order_id }}">Track Order</a></p>
+        </div>
+    </center>
+        
+    {% endfor %}
+{% else %}
+    <p>No orders available.</p>
+{% endif %}
+<br>
+<br>
+
+
+{% endblock body %}
+
+
+
+    
+

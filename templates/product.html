@@ -1,0 +1,125 @@
+{% extends "nav.html" %}
+
+{% load static %}
+
+{% block title %}
+Zac-Clothing | {{ product.product_name }}
+
+{% endblock title %}
+
+{% block body %}
+<br><br><br><br>
+<div class="container">
+    <div class="section-title" data-aos="fade-up">
+      <h2>Product</h2>
+    </div>
+  <section id="product">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Image Slider -->
+                <div id="imageSlider" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        {% if product.image %}
+                            <div class="carousel-item active">
+                                <img src="/media/{{product.image}}" class="d-block w-100" alt="Product Image 1">
+                            </div>
+                        {% endif %}
+                        {% if product.image2 %}
+                            <div class="carousel-item {% if not product.image %} active {% endif %}">
+                                <img src="/media/{{product.image2}}" class="d-block w-100" alt="Product Image 2">
+                            </div>
+                        {% endif %}
+                        <!-- Add more if needed for additional images (image3, image4, etc.) -->
+                    </div>
+                    <a class="carousel-control-prev" href="#imageSlider" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#imageSlider" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Product Details -->
+                <div class="product-details">
+                    <h2>{{ product.product_name }}</h2>
+                    <p>Category: {{ product.category }}</p>
+                    <p>Subcategory: {{ product.subcategory }}</p>
+                    <p>Price: ${{ product.price }}</p>
+                    <p>Description: {{ product.desc }}</p>
+                    <!-- Add to Cart Button -->
+                    <button class="btn btn-primary" onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+{% endblock body %}
+
+{% block load %}
+
+
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function addToCart(productId) {
+    var csrftoken = getCookie('csrftoken');
+    console.log("Came inside");
+    $.ajax({
+        type: 'POST',
+        url: '{% url "add" %}',
+        data: {
+            'product_id': productId,
+            'csrfmiddlewaretoken': csrftoken,
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                // SweetAlert2 alert for success
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Product added to cart!',
+                });
+            } else {
+                // SweetAlert2 alert for error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Error: ' + response.message,
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            // SweetAlert2 alert for general error
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'An error occurred while adding the product to cart.',
+            });
+            console.error(error);
+        }
+    });
+}
+{% endblock load %}
+
+
+
+

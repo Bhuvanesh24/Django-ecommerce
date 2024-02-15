@@ -1,0 +1,145 @@
+
+{% extends "nav.html" %}
+
+{% block title %}
+    Zac-Clothing | Your Cart
+{% endblock title %}
+
+{% block style %}
+
+<style>
+
+    .cart-item-box {
+        display: flex;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    
+    .cart-item-image {
+        flex: 0 0 150px;
+    }
+    
+    .cart-item-image img {
+        width: 100%;
+        height: auto;
+    }
+    
+    .cart-item-details {
+        flex: 1;
+        padding: 10px;
+    }
+    
+    .quantity-buttons button {
+        background-color: #f8f9fa;
+        border: none;
+        color: #000;
+        cursor: pointer;
+    }
+    
+    .quantity-buttons button:hover {
+        background-color: #e9ecef;
+    }
+    
+    .checkout-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .checkout-btn:hover {
+        background-color: #0056b3;
+    }
+    .form-flex {
+        display: flex;
+        align-items: center;
+    }
+    
+    .form {
+        margin-right: 10px; /* Add margin between forms */
+    }
+    
+
+    .add-btn,
+    .remove-btn {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+        display: inline-block; /* Ensure buttons display inline */
+    }
+    
+    .add-btn:hover,
+    {
+        background-color: #0056b3;
+    }
+    
+    .remove-btn {
+        background-color: #dc3545;
+        margin-left: 10px; 
+    }
+    .remove-btn:hover {
+        
+    }
+    
+</style>
+
+
+{% endblock style %}
+
+{% block body %}
+    <br><br><br><br>
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        {% if cart_items %}
+            <div class="cart-items">
+                {% for item in cart_items %}
+                    <div class="cart-item-box">
+                        <div class="cart-item-image">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}">
+                        </div>
+                        <div class="cart-item-details">
+                            <p>{{ item.product.product_name }}</p>
+                            <p>Price: Rs.{{ item.product.price }}</p>
+                            <p>Quantity: <span id="quantity_{{ item.id }}">{{ item.quantity }}</span></p>
+                            <p>Total Amount: Rs.{{ item.total_price }}</p>
+                            <div class="form-flex">
+                                <form action="{% url 'add-to-cart' item.product.id %}" method="post" class="form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="add-btn">+</button>
+                                </form>
+                                <form action="{% url 'remove-from-cart' item.product.id %}" method="post" class="form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="remove-btn">-</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Checkout button -->
+            <button class="checkout-btn">Checkout</button>
+            <!-- Total quantity section -->
+            <p>Total Quantity: {{ total_quantity }}</p>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+
