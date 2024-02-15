@@ -57,7 +57,8 @@ Zac-Clothing | Orders
 {% endblock style %}
 
 {% block body %}
-<h1>Your Orders</h1>
+<div class="container" style="height:80vh;">
+    <h1>Your Orders</h1>
 {% if orders_with_names %}
     {% for order_with_name in orders_with_names %}
     <center>
@@ -77,9 +78,7 @@ Zac-Clothing | Orders
 {% else %}
     <p>No orders available.</p>
 {% endif %}
-<br>
-<br>
-
+</div>
 
 {% endblock body %}
 
