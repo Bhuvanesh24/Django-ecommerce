@@ -112,12 +112,14 @@
                             <p>Price: Rs.{{ item.product.price }}</p>
                             <p>Quantity: <span id="quantity_{{ item.id }}">{{ item.quantity }}</span></p>
                             <p>Total Amount: Rs.{{ item.total_price }}</p>
+                            <p>Size: {{ item.size }}</p>
+                            
                             <div class="form-flex">
-                                <form action="{% url 'add-to-cart' item.product.id %}" method="post" class="form">
+                                <form action="{% url 'add_to_cart' item.product.id item.size%}" method="post" class="form">
                                     {% csrf_token %}
                                     <button type="submit" class="add-btn">+</button>
                                 </form>
-                                <form action="{% url 'remove-from-cart' item.product.id %}" method="post" class="form">
+                                <form action="{% url 'remove_from_cart' item.product.id item.size %}" method="post" class="form">
                                     {% csrf_token %}
                                     <button type="submit" class="remove-btn">-</button>
                                 </form>

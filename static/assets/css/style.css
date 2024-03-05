@@ -1,6 +1,6 @@
 body {
   font-family: "Open Sans", sans-serif;
-  color: #444444;
+  background-color: beige;
 }
 
 a {
@@ -22,9 +22,7 @@ h6 {
   font-family: "Raleway", sans-serif;
 }
 
-/*--------------------------------------------------------------
-# Back to top button
---------------------------------------------------------------*/
+
 .back-to-top {
   position: fixed;
   visibility: hidden;
@@ -72,7 +70,7 @@ h6 {
   z-index: 997;
   transition: all 0.5s;
   padding: 22px 0;
-  background: #fff;
+  background:beige;
 }
 
 #header.header-scrolled {
@@ -383,6 +381,11 @@ h6 {
 #hero .animated {
   animation: up-down 2s ease-in-out infinite alternate-reverse both;
 }
+#main {
+  margin: 30px; 
+  min-height: 100vh;
+}
+
 
 @media (min-width: 1024px) {
   #hero {
@@ -1571,11 +1574,15 @@ section {
 # Footer
 --------------------------------------------------------------*/
 #footer {
-  background: #fff;
+  background:beige;
   box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.1);
   padding: 30px 0;
   color: #222222;
   font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
 }
 
 #footer .credits {
@@ -1596,3 +1603,4 @@ section {
 #footer .footer-links a:hover {
   color: #3498db;
 }
+

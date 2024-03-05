@@ -11,7 +11,16 @@ class Product(models.Model):
     desc = models.CharField(max_length=150)
     image = models.ImageField(upload_to='shop/images',default='')
     image2 = models.ImageField(upload_to='shop/images',default='')
+    SIZE_CHOICES = [
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+        ('XL', 'Extra Large'),
+    ]
 
+    size = models.CharField(max_length=2, choices=SIZE_CHOICES, default='M')
+
+    
     def __str__(self):
         return self.product_name
 
@@ -50,8 +59,8 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart for {self.user.username}"
 
-    def add_product(self, product, quantity=1):
-        cart_item, created = CartItem.objects.get_or_create(cart=self, product=product)
+    def add_product(self, product,size='M', quantity=1):
+        cart_item, created = CartItem.objects.get_or_create(cart=self, product=product, size=size)
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
@@ -59,9 +68,9 @@ class Cart(models.Model):
             cart_item.quantity = quantity  # Set the quantity if it's a new item
             cart_item.save()
 
-    def remove_product(self, product):
+    def remove_product(self, product,size='M'):
         try:
-            cart_item = CartItem.objects.get(cart=self, product=product)
+            cart_item = CartItem.objects.get(cart=self, product=product, size=size)
             if cart_item.quantity == 1:
                 cart_item.delete()
             else:
@@ -79,9 +88,11 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    size = models.CharField(max_length=2, choices=Product.SIZE_CHOICES, default='M')
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.product_name} in {self.cart}"
+        return f"{self.quantity} x {self.product.product_name} ({self.size}) in {self.cart}"
+    
 
     @property
     def total_price(self):

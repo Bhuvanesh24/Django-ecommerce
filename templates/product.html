@@ -8,55 +8,65 @@ Zac-Clothing | {{ product.product_name }}
 {% endblock title %}
 
 {% block body %}
-<br><br><br><br>
-<div class="container" style="height:80vh;">
-    <div class="section-title" data-aos="fade-up">
-      <h2>Product</h2>
-    </div>
-  <section id="product">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Image Slider -->
-                <div id="imageSlider" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        {% if product.image %}
-                            <div class="carousel-item active">
-                                <img src="/media/{{product.image}}" class="d-block w-100" alt="Product Image 1">
-                            </div>
-                        {% endif %}
-                        {% if product.image2 %}
-                            <div class="carousel-item {% if not product.image %} active {% endif %}">
-                                <img src="/media/{{product.image2}}" class="d-block w-100" alt="Product Image 2">
-                            </div>
-                        {% endif %}
-                        <!-- Add more if needed for additional images (image3, image4, etc.) -->
-                    </div>
-                    <a class="carousel-control-prev" href="#imageSlider" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#imageSlider" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+<br><br>
+<div class="section-title" data-aos="fade-up">
+    <h2>Product</h2>
+    <p>Feel cozy Home</p>
+  </div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Image Slider -->
+            <div id="imageSlider" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% if product.image %}
+                        <div class="carousel-item active">
+                            <img src="{{ product.image.url }}" class="d-block w-100" alt="{{ product.product_name }} Image 1" style="max-height: 600px; max-width:400px;">
+                        </div>
+                    {% endif %}
+                    {% if product.image2 %}
+                        <div class="carousel-item {% if not product.image %} active {% endif %}">
+                            <img src="{{ product.image2.url }}" class="d-block w-100" alt="{{ product.product_name }} Image 2" style="max-height: 600px; max-width:400px;">
+                        </div>
+                    {% endif %}
+
                 </div>
+                <a class="carousel-control-prev" href="#imageSlider" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    
+                </a>
+                <a class="carousel-control-next" href="#imageSlider" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </a>
             </div>
-            <div class="col-md-6">
-                <!-- Product Details -->
-                <div class="product-details">
-                    <h2>{{ product.product_name }}</h2>
-                    <p>Category: {{ product.category }}</p>
-                    <p>Subcategory: {{ product.subcategory }}</p>
-                    <p>Price: ${{ product.price }}</p>
-                    <p>Description: {{ product.desc }}</p>
-                    <!-- Add to Cart Button -->
-                    <button class="btn btn-primary" onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+        </div>
+        <div class="col-md-6">
+            <!-- Product Details -->
+            <div class="product-details">
+                <h2>{{ product.product_name }}</h2>
+                <p>Category: {{ product.category }}</p>
+                <p>Subcategory: {{ product.subcategory }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <p>Description: {{ product.desc }}</p>
+
+
+                <div class="form-group">
+                <label for="size">Select Size:</label>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    {% for size, size_label in product.SIZE_CHOICES %}
+                        <label class="btn btn-secondary {% if size == product.size %}active{% endif %}">
+                            <input type="radio" name="size" id="size_{{ size }}" autocomplete="off" value="{{ size }}" {% if size == product.size %}checked{% endif %}> {{ size_label }}
+                        </label>
+                    {% endfor %}
                 </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <button class="btn btn-primary" onclick="addToCart('{{ product.id }}', $('input[name=size]:checked').val())">Add to Cart</button>
+
             </div>
         </div>
     </div>
-</section>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 {% endblock body %}
@@ -80,7 +90,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function addToCart(productId) {
+function addToCart(productId,selectedSize) {
     var csrftoken = getCookie('csrftoken');
     console.log("Came inside");
     $.ajax({
@@ -89,6 +99,7 @@ function addToCart(productId) {
         data: {
             'product_id': productId,
             'csrfmiddlewaretoken': csrftoken,
+            'size': selectedSize,
         },
         success: function (response) {
             if (response.status === 'success') {

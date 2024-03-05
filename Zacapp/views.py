@@ -211,19 +211,22 @@ def product(request,product_id):
 @require_POST
 def add(request):
     product_id = request.POST.get('product_id')
+    size = request.POST.get('size', 'M') 
+    print(size)
     if product_id:
         try:
             product = Product.objects.get(id=product_id)
             user_cart, _ = Cart.objects.get_or_create(user=request.user)
-            # Try to get an existing CartItem object
-            cart_item, created = CartItem.objects.get_or_create(cart=user_cart, product=product)
-            # Increment the quantity if the CartItem exists
+
+            cart_item, created = CartItem.objects.get_or_create(cart=user_cart, product=product, size=size)
+            
             if not created:
                 cart_item.quantity += 1
                 cart_item.save()
-            # Update the total amount in the cart
+
             user_cart.amount = user_cart.products.aggregate(Sum('price'))['price__sum']
             user_cart.save()
+
             return JsonResponse({'status': 'success'})
         except Product.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Product not found'})
@@ -248,16 +251,16 @@ def cart(request):
     
 
 @login_required
-def add_to_cart(request, product_id):
+def add_to_cart(request, product_id, selected_size):
     product = Product.objects.get(pk=product_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
-    cart.add_product(product)
+    cart.add_product(product, selected_size)
     return redirect('cart')
 
 @login_required
-def remove_from_cart(request, product_id):
+def remove_from_cart(request, product_id, selected_size):
     product = Product.objects.get(pk=product_id)
     cart = Cart.objects.get(user=request.user)
-    cart.remove_product(product)
+    cart.remove_product(product, selected_size)
     return redirect('cart')
 
